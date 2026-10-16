@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const productoRoutes = require('./routes/producto.routes');
+const pool = require('./config/db');
 
 const app = express();
 
@@ -10,6 +11,16 @@ app.use(express.json());
 
 app.get('/', (req, res) => {
     res.send('API backendUpb funcionando');
+});
+
+// Estado de la API y de la conexión a la base de datos
+app.get('/api/health', async (req, res) => {
+    try {
+        await pool.query('SELECT 1');
+        res.json({ status: 'ok', db: 'ok', uptime: process.uptime() });
+    } catch (err) {
+        res.status(503).json({ status: 'error', db: 'sin conexión' });
+    }
 });
 
 app.use('/api/productos', productoRoutes);
