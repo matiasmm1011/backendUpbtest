@@ -17,9 +17,9 @@ app.get('/', (req, res) => {
 app.get('/api/health', async (req, res) => {
     try {
         await pool.query('SELECT 1');
-        res.json({ status: 'ok', db: 'ok', uptime: process.uptime() });
+        res.json({ status: 'ok', db: 'ok', uptime: process.uptime(), commit: process.env.RENDER_GIT_COMMIT || null });
     } catch (err) {
-        res.status(503).json({ status: 'error', db: 'sin conexión' });
+        res.status(503).json({ status: 'error', db: 'sin conexión', commit: process.env.RENDER_GIT_COMMIT || null });
     }
 });
 
